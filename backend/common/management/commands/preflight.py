@@ -10,6 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         steps = (
             ("Connexion MongoDB", "check_mongodb"),
+            ("Index MongoDB", "check_indexes"),
             ("Intégrité des données", "verify_data"),
         )
 
