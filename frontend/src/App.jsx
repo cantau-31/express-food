@@ -8,6 +8,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { api } from "./api";
+import { calculateCartTotals } from "./cart";
 import AdminDashboard from "./AdminDashboard";
 
 const money = (value) =>
@@ -161,16 +162,10 @@ function MenuPage({ cart, setCart }) {
 }
 
 function CartPage({ cart, setCart }) {
-  const subtotal = useMemo(
-    () =>
-      cart.reduce(
-        (sum, item) => sum + Number(item.price) * Number(item.quantity),
-        0
-      ),
+  const { subtotal, deliveryFee, total, missingForFreeDelivery } = useMemo(
+    () => calculateCartTotals(cart),
     [cart]
   );
-  const deliveryFee = subtotal >= 19.99 || subtotal === 0 ? 0 : 2.99;
-  const total = subtotal + deliveryFee;
 
   const changeQuantity = (id, delta) => {
     setCart((current) =>
@@ -228,7 +223,7 @@ function CartPage({ cart, setCart }) {
         />
         {subtotal < 19.99 && (
           <p className="hint">
-            Plus que {money(19.99 - subtotal)} pour profiter de la livraison offerte.
+            Plus que {money(missingForFreeDelivery)} pour profiter de la livraison offerte.
           </p>
         )}
         <div className="summary-total">

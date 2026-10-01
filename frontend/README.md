@@ -51,3 +51,21 @@ La variable `VITE_API_BASE_URL` permet de changer l'URL de l'API.
 ## Rôle de Rayen
 
 Rayen est responsable du frontend React : UI, responsive, intégration avec l'API Django, affichage des données de commande/livraison et préparation du déploiement frontend.
+
+
+## Tests frontend
+
+Les règles de calcul du panier sont couvertes par des tests automatisés :
+
+```bash
+cd frontend
+npm test
+```
+
+Les tests vérifient notamment :
+- le calcul du sous-total ;
+- les frais de livraison sous le seuil ;
+- la livraison gratuite exactement à **19,99 €** ;
+- le comportement d'un panier vide.
+
+Le workflow GitHub Actions exécute désormais les tests avant le build Vite.
