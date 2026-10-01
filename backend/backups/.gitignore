@@ -1,0 +1,3 @@
+# Les sauvegardes contiennent des donnees personnelles clients : ne jamais les committer (RGPD).
+*
+!.gitignore
