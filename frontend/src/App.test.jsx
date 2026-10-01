@@ -115,6 +115,78 @@ describe("App", () => {
     expect(screen.getAllByText("25,98 €").length).toBeGreaterThan(0);
   });
 
+  it("crée une commande depuis le checkout et ouvre le suivi", async () => {
+    localStorage.setItem(
+      "express-food-cart",
+      JSON.stringify([
+        {
+          id: "meal-1",
+          name: "Poulet citron",
+          price: "12.99",
+          type: "dish",
+          quantity: 2,
+        },
+      ])
+    );
+
+    api.getClients.mockResolvedValue([
+      {
+        id: "client-1",
+        first_name: "Rayen",
+        last_name: "Ouanes",
+        email: "rayen@example.com",
+      },
+    ]);
+    api.createOrder.mockResolvedValue({
+      id: "order-123456",
+    });
+    api.getOrderStatus.mockResolvedValue({
+      order_id: "order-123456",
+      status: "accepted",
+      driver: { first_name: "Lucas", latitude: null, longitude: null },
+      estimated_delivery_minutes: 20,
+    });
+    api.getOrder.mockResolvedValue({
+      id: "order-123456",
+      items: [
+        {
+          meal_id: "meal-1",
+          name: "Poulet citron",
+          quantity: 2,
+          unit_price: "12.99",
+          subtotal: "25.98",
+        },
+      ],
+      subtotal: "25.98",
+      delivery_fee: "0.00",
+      total: "25.98",
+      status: "accepted",
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/checkout"]}>
+        <App />
+      </MemoryRouter>
+    );
+
+    const select = await screen.findByLabelText("Client");
+    fireEvent.change(select, { target: { value: "client-1" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Commander maintenant" })
+    );
+
+    expect(api.createOrder).toHaveBeenCalledWith({
+      client_id: "client-1",
+      items: [{ meal_id: "meal-1", quantity: 2 }],
+    });
+
+    expect(
+      await screen.findByRole("heading", { name: "Suivi de livraison" })
+    ).toBeInTheDocument();
+
+    expect(localStorage.getItem("express-food-cart")).toBe("[]");
+  });
+
   it("affiche une erreur API dans le menu", async () => {
     api.getTodayMeals.mockRejectedValue(new Error("Backend indisponible"));
 
