@@ -69,3 +69,17 @@ Les tests vérifient notamment :
 - le comportement d'un panier vide.
 
 Le workflow GitHub Actions exécute désormais les tests avant le build Vite.
+
+
+### Tests du client API
+
+Les tests couvrent également l'intégration HTTP côté frontend :
+
+- URL du menu du jour ;
+- création de commande en POST JSON ;
+- réponses `204 No Content` ;
+- erreurs `detail` du backend ;
+- erreurs de validation par champ ;
+- indisponibilité réseau/backend.
+
+Le frontend affiche un message explicite si l'API Django ne peut pas être jointe.
