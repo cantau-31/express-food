@@ -219,3 +219,14 @@ python manage.py data_report
 ```
 
 Le rapport montre les volumes et les statuts uniquement. C'est préférable à l'affichage brut des collections pendant une soutenance.
+
+
+## 15. Vérification avant déploiement
+
+Pour montrer que la configuration de production n'est pas laissée au hasard :
+
+```bash
+python manage.py check_deployment
+```
+
+Cette commande vérifie les principaux paramètres de sécurité de déploiement, notamment `DEBUG`, la clé Django, `ALLOWED_HOSTS`, CORS et la configuration MongoDB.
