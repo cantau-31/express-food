@@ -154,3 +154,15 @@ python manage.py anonymize_driver DRIVER_ID
 La commande client remplace le prénom, le nom, l'email, le téléphone et l'adresse par des valeurs anonymisées, tout en conservant les commandes historiques liées à l'identifiant technique du client. La commande livreur anonymise son identité, efface sa position, le passe hors ligne et refuse l'opération s'il possède encore une commande active.
 
 Cette fonctionnalité aide à démontrer une démarche de minimisation et d'anonymisation, mais **ne constitue pas à elle seule une conformité RGPD complète** : une politique de conservation, les bases légales, l'information des personnes et les contrôles d'accès restent à définir par le projet.
+
+
+## Rapport Data pour démonstration
+
+Pour afficher un état synthétique de la base sans exposer de données personnelles :
+
+```bash
+cd backend
+python manage.py data_report
+```
+
+Le rapport affiche uniquement des agrégats : nombre de clients, repas, livreurs, commandes et répartition des statuts. Il ne montre ni noms, ni emails, ni téléphones, ni adresses, ni positions.
