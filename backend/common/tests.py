@@ -111,11 +111,8 @@ class InfrastructureTests(APITestCase):
             call_command("preflight", stdout=out)
 
         self.assertEqual(
-            mocked.call_args_list,
-            [
-                call("check_mongodb", stdout=mocked.call_args_list[0].kwargs["stdout"], stderr=mocked.call_args_list[0].kwargs["stderr"]),
-                call("verify_data", stdout=mocked.call_args_list[1].kwargs["stdout"], stderr=mocked.call_args_list[1].kwargs["stderr"]),
-            ],
+            [item.args[0] for item in mocked.call_args_list],
+            ["check_mongodb", "check_indexes", "verify_data"],
         )
         self.assertIn("Préflight Data / intégration : OK", out.getvalue())
 
