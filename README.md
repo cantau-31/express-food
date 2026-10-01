@@ -101,7 +101,7 @@ Ces tests utilisent une base temporaire `express_food_test_<uuid>` puis la suppr
 
 ## MongoDB Atlas
 
-La procédure détaillée est disponible dans [docs/MONGODB_ATLAS.md](docs/MONGODB_ATLAS.md). Le schéma logique des collections est documenté dans [docs/DATA_MODEL.md](docs/DATA_MODEL.md).
+La procédure détaillée est disponible dans [docs/MONGODB_ATLAS.md](docs/MONGODB_ATLAS.md). Le schéma logique des collections est documenté dans [docs/DATA_MODEL.md](docs/DATA_MODEL.md). Une fiche de démonstration et de soutenance pour la partie Data / intégration est disponible dans [docs/RAYEN_SOUTENANCE.md](docs/RAYEN_SOUTENANCE.md).
 
 Les identifiants Atlas ne doivent jamais être commités. Le fichier `.env` est ignoré par Git ; seul `.env.example` est versionné.
 
