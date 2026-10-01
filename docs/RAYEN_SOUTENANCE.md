@@ -208,3 +208,14 @@ La commande anonymise les informations personnelles du client tout en conservant
 
 
 Pour les livreurs, l'anonymisation efface aussi la position et force le statut `offline`. Elle est bloquée si une commande est encore active, afin de ne pas casser le suivi de livraison.
+
+
+## 14. Rapport Data pour la démo
+
+Pour présenter la base sans afficher d'informations personnelles :
+
+```bash
+python manage.py data_report
+```
+
+Le rapport montre les volumes et les statuts uniquement. C'est préférable à l'affichage brut des collections pendant une soutenance.
