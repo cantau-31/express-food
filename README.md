@@ -74,6 +74,7 @@ Initialiser MongoDB et charger les données de démonstration :
 
 ```bash
 python manage.py check
+python manage.py check_mongodb
 python manage.py init_db
 python manage.py seed_data
 python manage.py runserver
@@ -100,7 +101,7 @@ Ces tests utilisent une base temporaire `express_food_test_<uuid>` puis la suppr
 
 ## MongoDB Atlas
 
-La procédure détaillée est disponible dans [docs/MONGODB_ATLAS.md](docs/MONGODB_ATLAS.md).
+La procédure détaillée est disponible dans [docs/MONGODB_ATLAS.md](docs/MONGODB_ATLAS.md). Le schéma logique des collections est documenté dans [docs/DATA_MODEL.md](docs/DATA_MODEL.md).
 
 Les identifiants Atlas ne doivent jamais être commités. Le fichier `.env` est ignoré par Git ; seul `.env.example` est versionné.
 
