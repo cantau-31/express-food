@@ -31,3 +31,23 @@ class InfrastructureTests(APITestCase):
             response = self.api.get("/api/unknown/")
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"detail": "Route introuvable."})
+
+
+    def test_db_status_command(self):
+        from unittest.mock import MagicMock
+        from django.test import override_settings
+
+        self.db.clients.insert_one({"email": "status@example.com"})
+        fake_client = MagicMock()
+        fake_client.admin.command.return_value = {"ok": 1.0}
+
+        with override_settings(MONGODB_URI="mongodb://example", MONGODB_DATABASE="test"):
+            with patch("common.management.commands.db_status.mongo_client", return_value=fake_client):
+                with patch("common.management.commands.db_status.database", return_value=self.db):
+                    out = StringIO()
+                    call_command("db_status", stdout=out)
+
+        output = out.getvalue()
+        self.assertIn("Connexion MongoDB : OK", output)
+        self.assertIn("clients: 1 document(s)", output)
+        self.assertIn("orders:", output)
