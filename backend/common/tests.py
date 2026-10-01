@@ -255,3 +255,36 @@ class InfrastructureTests(APITestCase):
         with patch("common.management.commands.check_indexes.database", return_value=self.db):
             with self.assertRaises(Exception):
                 call_command("check_indexes", stdout=StringIO(), stderr=StringIO())
+
+
+    def test_check_deployment_command(self):
+        from django.test import override_settings
+
+        secure = override_settings(
+            DEBUG=False,
+            SECRET_KEY="x" * 50,
+            ALLOWED_HOSTS=["api.example.com"],
+            CORS_ALLOWED_ORIGINS=["https://app.example.com"],
+            MONGODB_URI="mongodb+srv://example.invalid/",
+            MONGODB_DATABASE="express_food",
+        )
+        secure.enable()
+        self.addCleanup(secure.disable)
+
+        out = StringIO()
+        call_command("check_deployment", stdout=out)
+        self.assertIn("Configuration de déploiement : OK", out.getvalue())
+
+    def test_check_deployment_rejects_unsafe_settings(self):
+        from django.test import override_settings
+
+        with override_settings(
+            DEBUG=True,
+            SECRET_KEY="short",
+            ALLOWED_HOSTS=["*"],
+            CORS_ALLOWED_ORIGINS=[],
+            MONGODB_URI="",
+            MONGODB_DATABASE="",
+        ):
+            with self.assertRaises(Exception):
+                call_command("check_deployment", stdout=StringIO(), stderr=StringIO())
