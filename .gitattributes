@@ -1,0 +1,2 @@
+# Normalise les fins de ligne en LF dans le depot (equipe multi-OS).
+* text=auto eol=lf

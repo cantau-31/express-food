@@ -1,0 +1,39 @@
+# Blueprint Render (Infrastructure as Code) pour deployer le BACKEND Django.
+# Le frontend React est deploye separement sur Vercel (voir frontend/DEPLOYMENT.md).
+# Les secrets (MONGODB_URI) et les hotes se renseignent dans le dashboard, jamais ici.
+# Deploiement : Render > New > Blueprint, pointer sur ce depot.
+services:
+  - type: web
+    name: ipssi-express-food-api
+    runtime: python
+    region: frankfurt
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: gunicorn config.wsgi:application
+    healthCheckPath: /api/meals/today/
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      # A renseigner dans le dashboard : l'hote .onrender.com attribue au service.
+      - key: ALLOWED_HOSTS
+        sync: false
+      # Origine EXACTE du frontend deploye (ex : https://ipssi-express-food.vercel.app).
+      # Doit correspondre a l'URL Vercel de Rayen. Voir docs/integration.md.
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      # URI Atlas, secret : a saisir dans le dashboard uniquement.
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DATABASE
+        value: express_food
+      - key: FREE_DELIVERY_THRESHOLD
+        value: "19.99"
+      - key: DEFAULT_DELIVERY_FEE
+        value: "2.99"
+      - key: DEFAULT_DELIVERY_ESTIMATE
+        value: "20"

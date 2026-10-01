@@ -1,0 +1,4 @@
+# Dependances de production : la base compatible (requirements.txt) + un serveur WSGI.
+# gunicorn ne fonctionne que sous Linux ; en local Windows, utiliser `runserver`.
+-r requirements.txt
+gunicorn>=23,<24
