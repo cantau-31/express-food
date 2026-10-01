@@ -76,6 +76,7 @@ Initialiser MongoDB et charger les données de démonstration :
 python manage.py check
 python manage.py check_mongodb
 python manage.py init_db
+python manage.py check_indexes
 python manage.py seed_data
 python manage.py verify_data
 python manage.py db_status
@@ -105,7 +106,7 @@ Ces tests utilisent une base temporaire `express_food_test_<uuid>` puis la suppr
 
 ## MongoDB Atlas
 
-La procédure détaillée est disponible dans [docs/MONGODB_ATLAS.md](docs/MONGODB_ATLAS.md). Le schéma logique des collections est documenté dans [docs/DATA_MODEL.md](docs/DATA_MODEL.md). Une fiche de démonstration et de soutenance pour la partie Data / intégration est disponible dans [docs/RAYEN_SOUTENANCE.md](docs/RAYEN_SOUTENANCE.md).
+La procédure détaillée est disponible dans [docs/MONGODB_ATLAS.md](docs/MONGODB_ATLAS.md). Le schéma logique des collections est documenté dans [docs/DATA_MODEL.md](docs/DATA_MODEL.md). La stratégie d’index MongoDB est détaillée dans [docs/INDEX_STRATEGY.md](docs/INDEX_STRATEGY.md). Une fiche de démonstration et de soutenance pour la partie Data / intégration est disponible dans [docs/RAYEN_SOUTENANCE.md](docs/RAYEN_SOUTENANCE.md).
 
 Les identifiants Atlas ne doivent jamais être commités. Le fichier `.env` est ignoré par Git ; seul `.env.example` est versionné.
 
@@ -166,3 +167,15 @@ python manage.py data_report
 ```
 
 Le rapport affiche uniquement des agrégats : nombre de clients, repas, livreurs, commandes et répartition des statuts. Il ne montre ni noms, ni emails, ni téléphones, ni adresses, ni positions.
+
+
+## Vérification des index MongoDB
+
+Après `init_db`, vérifier que les index attendus sont réellement présents :
+
+```bash
+cd backend
+python manage.py check_indexes
+```
+
+La commande échoue si un index indispensable manque ou si l'index unique sur `clients.email` n'est pas configuré comme unique. Elle est également exécutée par `python manage.py preflight`.

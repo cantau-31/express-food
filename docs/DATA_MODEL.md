@@ -77,7 +77,8 @@ Règles :
 - un livreur occupé ne peut être libéré manuellement avant livraison/annulation.
 
 Index :
-- `status`.
+- `status` ;
+- `active_order_id` pour retrouver rapidement le livreur lié à une commande active.
 
 ## `orders`
 
@@ -114,7 +115,12 @@ Règles principales :
 - le nom et le prix du repas sont copiés dans la commande pour préserver l'historique.
 
 Index :
-- `client_id`.
+- `client_id` ;
+- `status` ;
+- `delivery_driver_id` ;
+- `created_at`.
+
+Ces index couvrent les principales recherches de suivi, d’historique et de diagnostic.
 
 ## Relations logiques
 
