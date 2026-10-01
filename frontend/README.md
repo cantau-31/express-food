@@ -93,3 +93,15 @@ Le frontend vérifie désormais avant envoi les coordonnées d'un livreur :
 - les deux valeurs sont obligatoires pour une mise à jour de position.
 
 La page de suivi récupère en parallèle le statut de livraison et la commande complète afin d'afficher les articles, le sous-total, les frais de livraison et le total.
+
+
+### Parcours commande testé
+
+Le workflow automatisé couvre désormais aussi un parcours utilisateur critique :
+
+1. panier déjà rempli ;
+2. sélection d'un client ;
+3. envoi de la commande vers l'API ;
+4. vérification du payload envoyé ;
+5. redirection vers le suivi ;
+6. vidage du panier après création réussie.
