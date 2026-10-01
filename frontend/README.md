@@ -10,7 +10,7 @@ Frontend réalisé par **Rayen** pour IPSSI Express Food.
 - sélection d'un client existant ou création d'un nouveau client ;
 - création de commande via l'API ;
 - redirection immédiate vers le suivi de livraison ;
-- suivi du statut, du livreur et du temps estimé ;
+- suivi du statut, du livreur, de la position, du temps estimé et du récapitulatif de commande ;
 - affichage de la flotte et du statut des livreurs ;
 - interface responsive desktop / mobile ;
 - URLs explicites via React Router.
@@ -83,3 +83,13 @@ Les tests couvrent également l'intégration HTTP côté frontend :
 - indisponibilité réseau/backend.
 
 Le frontend affiche un message explicite si l'API Django ne peut pas être jointe.
+
+
+## Validation d'intégration
+
+Le frontend vérifie désormais avant envoi les coordonnées d'un livreur :
+- latitude entre -90 et 90 ;
+- longitude entre -180 et 180 ;
+- les deux valeurs sont obligatoires pour une mise à jour de position.
+
+La page de suivi récupère en parallèle le statut de livraison et la commande complète afin d'afficher les articles, le sous-total, les frais de livraison et le total.
