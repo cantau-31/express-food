@@ -199,8 +199,12 @@ Pour montrer une démarche de protection des données pendant la soutenance :
 
 ```bash
 python manage.py anonymize_client CLIENT_ID
+python manage.py anonymize_driver DRIVER_ID
 ```
 
 La commande anonymise les informations personnelles du client tout en conservant l'historique de ses commandes.
 
 À préciser à l'oral : cette commande illustre un mécanisme d'anonymisation, mais le projet ne prétend pas couvrir à lui seul toute la conformité RGPD.
+
+
+Pour les livreurs, l'anonymisation efface aussi la position et force le statut `offline`. Elle est bloquée si une commande est encore active, afin de ne pas casser le suivi de livraison.
