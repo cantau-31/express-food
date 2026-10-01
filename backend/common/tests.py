@@ -101,3 +101,20 @@ class InfrastructureTests(APITestCase):
         with patch("common.management.commands.verify_data.database", return_value=self.db):
             with self.assertRaises(Exception):
                 call_command("verify_data", stdout=StringIO(), stderr=StringIO())
+
+
+    def test_preflight_command(self):
+        from unittest.mock import call, patch as mock_patch
+
+        with mock_patch("common.management.commands.preflight.call_command") as mocked:
+            out = StringIO()
+            call_command("preflight", stdout=out)
+
+        self.assertEqual(
+            mocked.call_args_list,
+            [
+                call("check_mongodb", stdout=mocked.call_args_list[0].kwargs["stdout"], stderr=mocked.call_args_list[0].kwargs["stderr"]),
+                call("verify_data", stdout=mocked.call_args_list[1].kwargs["stdout"], stderr=mocked.call_args_list[1].kwargs["stderr"]),
+            ],
+        )
+        self.assertIn("Préflight Data / intégration : OK", out.getvalue())
