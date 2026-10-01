@@ -77,6 +77,8 @@ python manage.py check
 python manage.py check_mongodb
 python manage.py init_db
 python manage.py seed_data
+python manage.py verify_data
+python manage.py db_status
 python manage.py runserver
 ```
 
@@ -125,3 +127,15 @@ Un Blueprint Render est fourni dans `render.yaml`. Les secrets, notamment `DJANG
 Le projet est organisé avec Git/GitHub et une répartition par responsabilités.
 
 **Trello : à renseigner avec le lien du tableau de l'équipe avant la remise finale.**
+
+
+## Vérification d'intégrité des données
+
+La commande suivante contrôle les principales références et incohérences sans modifier les données :
+
+```bash
+cd backend
+python manage.py verify_data
+```
+
+Elle vérifie notamment les statuts de commandes/livreurs, les coordonnées partielles, les références client/livreur des commandes et la cohérence entre `active_order_id` d'un livreur et la commande affectée.
