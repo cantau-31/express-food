@@ -241,3 +241,20 @@ class InfrastructureTests(APITestCase):
         self.assertIn("status_1", order_indexes)
         self.assertIn("delivery_driver_id_1", order_indexes)
         self.assertIn("created_at_1", order_indexes)
+
+
+    def test_check_indexes_command(self):
+        from common.db import ensure_indexes
+
+        with patch("common.db.database", return_value=self.db):
+            ensure_indexes()
+
+        with patch("common.management.commands.check_indexes.database", return_value=self.db):
+            out = StringIO()
+            call_command("check_indexes", stdout=out)
+        self.assertIn("Index MongoDB : OK", out.getvalue())
+
+        self.db.orders.drop_index("status_1")
+        with patch("common.management.commands.check_indexes.database", return_value=self.db):
+            with self.assertRaises(Exception):
+                call_command("check_indexes", stdout=StringIO(), stderr=StringIO())
