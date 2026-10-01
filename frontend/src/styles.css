@@ -285,3 +285,14 @@ input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rg
   .row-actions { justify-content: flex-start; }
   .mini-fields { grid-template-columns: 1fr; }
 }
+
+
+.tracking-cancelled {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff0f0;
+  color: var(--danger);
+  font-weight: 800;
+  border: 1px solid #efcaca;
+}
