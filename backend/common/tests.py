@@ -118,3 +118,37 @@ class InfrastructureTests(APITestCase):
             ],
         )
         self.assertIn("Préflight Data / intégration : OK", out.getvalue())
+
+
+    def test_anonymize_client_command(self):
+        from bson import ObjectId
+
+        client_id = self.db.clients.insert_one({
+            "first_name": "Rayen",
+            "last_name": "Test",
+            "email": "rayen.test@example.com",
+            "phone": "0600000000",
+            "address": "10 rue Test",
+        }).inserted_id
+        self.db.orders.insert_one({
+            "client_id": str(client_id),
+            "status": "pending",
+            "delivery_driver_id": None,
+        })
+
+        with patch("common.management.commands.anonymize_client.database", return_value=self.db):
+            out = StringIO()
+            call_command("anonymize_client", str(client_id), stdout=out)
+
+        client = self.db.clients.find_one({"_id": client_id})
+        self.assertEqual(client["first_name"], "Deleted")
+        self.assertEqual(client["last_name"], "User")
+        self.assertEqual(client["phone"], "0000000000")
+        self.assertEqual(client["address"], "Anonymized")
+        self.assertTrue(client["email"].endswith("@anonymized.invalid"))
+        self.assertEqual(self.db.orders.count_documents({"client_id": str(client_id)}), 1)
+        self.assertIn("Historique conservé : 1 commande(s)", out.getvalue())
+
+        with patch("common.management.commands.anonymize_client.database", return_value=self.db):
+            with self.assertRaises(Exception):
+                call_command("anonymize_client", str(ObjectId()), stdout=StringIO(), stderr=StringIO())
