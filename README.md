@@ -179,3 +179,15 @@ python manage.py check_indexes
 ```
 
 La commande échoue si un index indispensable manque ou si l'index unique sur `clients.email` n'est pas configuré comme unique. Elle est également exécutée par `python manage.py preflight`.
+
+
+## Vérification avant déploiement
+
+Avant de publier le backend, vérifier les paramètres de production :
+
+```bash
+cd backend
+python manage.py check_deployment
+```
+
+La commande contrôle notamment que `DEBUG=False`, que la clé Django est suffisamment longue, que `ALLOWED_HOSTS` n'utilise pas `*`, que CORS est explicitement configuré et que les variables MongoDB sont présentes.
