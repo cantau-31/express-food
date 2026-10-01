@@ -2,11 +2,9 @@
 from datetime import date
 from decimal import Decimal
 from django.utils import timezone
-from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework import viewsets
 from rest_framework.response import Response
-from pymongo.errors import PyMongoError
-from common.db import database, get_document, mongo_client
+from common.db import database, get_document
 
 def storage_values(values):
     # Les montants sont stockés en chaînes décimales exactes ; dates ISO.
@@ -50,16 +48,3 @@ class DocumentViewSet(viewsets.ViewSet):
         document = get_document(self.collection, pk)
         database()[self.collection].delete_one({"_id": document["_id"]})
         return Response(status=204)
-
-
-@api_view(["GET"])
-def health(request):
-    """Readiness probe: API + MongoDB, sans exposer de secrets."""
-    try:
-        mongo_client().admin.command("ping")
-    except PyMongoError:
-        return Response(
-            {"status": "degraded", "database": "unavailable"},
-            status=status.HTTP_503_SERVICE_UNAVAILABLE,
-        )
-    return Response({"status": "ok", "database": "ok"})
