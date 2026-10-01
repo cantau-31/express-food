@@ -8,6 +8,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { api } from "./api";
+import AdminDashboard from "./AdminDashboard";
 
 const money = (value) =>
   new Intl.NumberFormat("fr-FR", {
@@ -31,6 +32,7 @@ function Layout({ cartCount, children }) {
           <NavLink to="/menu">Menu</NavLink>
           <NavLink to="/checkout">Commande</NavLink>
           <NavLink to="/drivers">Livreurs</NavLink>
+          <NavLink to="/admin">Gestion</NavLink>
           <NavLink className="cart-link" to="/cart">
             Panier <span>{cartCount}</span>
           </NavLink>
@@ -559,6 +561,7 @@ export default function App() {
         <Route path="/tracking" element={<TrackingSearchPage />} />
         <Route path="/tracking/:id" element={<TrackingPage />} />
         <Route path="/drivers" element={<DriversPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="*" element={<section className="page narrow"><StateCard text="Page introuvable." /></section>} />
       </Routes>
     </Layout>
