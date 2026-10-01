@@ -139,3 +139,17 @@ python manage.py verify_data
 ```
 
 Elle vérifie notamment les statuts de commandes/livreurs, les coordonnées partielles, les références client/livreur des commandes et la cohérence entre `active_order_id` d'un livreur et la commande affectée.
+
+
+## Données personnelles / RGPD
+
+Le projet limite les données client aux informations nécessaires à la livraison. Pour une démonstration de gestion du droit à l'effacement sans supprimer l'historique transactionnel, une commande d'administration permet d'anonymiser les informations personnelles d'un client :
+
+```bash
+cd backend
+python manage.py anonymize_client CLIENT_ID
+```
+
+La commande remplace le prénom, le nom, l'email, le téléphone et l'adresse par des valeurs anonymisées, tout en conservant les commandes historiques liées à l'identifiant technique du client.
+
+Cette fonctionnalité aide à démontrer une démarche de minimisation et d'anonymisation, mais **ne constitue pas à elle seule une conformité RGPD complète** : une politique de conservation, les bases légales, l'information des personnes et les contrôles d'accès restent à définir par le projet.
