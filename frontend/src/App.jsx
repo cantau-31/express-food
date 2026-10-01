@@ -400,12 +400,16 @@ function TrackingSearchPage() {
 function TrackingPage() {
   const { id } = useParams();
   const [tracking, setTracking] = useState(null);
+  const [order, setOrder] = useState(null);
   const [error, setError] = useState("");
 
   const load = () => {
-    api
-      .getOrderStatus(id)
-      .then(setTracking)
+    setError("");
+    Promise.all([api.getOrderStatus(id), api.getOrder(id)])
+      .then(([trackingData, orderData]) => {
+        setTracking(trackingData);
+        setOrder(orderData);
+      })
       .catch((err) => setError(err.message));
   };
 
@@ -469,6 +473,35 @@ function TrackingPage() {
             Actualiser
           </button>
         </div>
+
+        {order && (
+          <div className="order-recap">
+            <div className="order-recap-heading">
+              <div>
+                <small>Récapitulatif</small>
+                <strong>{order.items.length} article{order.items.length > 1 ? "s" : ""}</strong>
+              </div>
+              <strong>{money(order.total)}</strong>
+            </div>
+
+            <div className="order-recap-items">
+              {order.items.map((item) => (
+                <div className="order-recap-item" key={item.meal_id}>
+                  <span>{item.quantity} × {item.name}</span>
+                  <strong>{money(item.subtotal)}</strong>
+                </div>
+              ))}
+            </div>
+
+            <div className="order-recap-totals">
+              <SummaryLine label="Sous-total" value={money(order.subtotal)} />
+              <SummaryLine
+                label="Livraison"
+                value={Number(order.delivery_fee) === 0 ? "Offerte" : money(order.delivery_fee)}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
