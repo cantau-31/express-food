@@ -219,3 +219,25 @@ class InfrastructureTests(APITestCase):
         self.assertIn("- available: 1", output)
         self.assertIn("- offline: 1", output)
         self.assertNotIn("report@example.com", output)
+
+
+    def test_expected_mongodb_indexes(self):
+        from common.db import ensure_indexes
+
+        with patch("common.db.database", return_value=self.db):
+            ensure_indexes()
+
+        client_indexes = self.db.clients.index_information()
+        meal_indexes = self.db.meals.index_information()
+        driver_indexes = self.db.delivery_drivers.index_information()
+        order_indexes = self.db.orders.index_information()
+
+        self.assertIn("email_1", client_indexes)
+        self.assertTrue(client_indexes["email_1"]["unique"])
+        self.assertIn("date_1_available_1", meal_indexes)
+        self.assertIn("status_1", driver_indexes)
+        self.assertIn("active_order_id_1", driver_indexes)
+        self.assertIn("client_id_1", order_indexes)
+        self.assertIn("status_1", order_indexes)
+        self.assertIn("delivery_driver_id_1", order_indexes)
+        self.assertIn("created_at_1", order_indexes)
