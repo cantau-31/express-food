@@ -34,3 +34,14 @@ python manage.py db_status
 ```
 
 `db_status` affiche les index présents collection par collection sans révéler de données personnelles.
+
+
+## Contrôle automatique
+
+Après création des index :
+
+```bash
+python manage.py check_indexes
+```
+
+Cette commande compare la configuration réelle de MongoDB aux index attendus par l'application et échoue si un index est absent ou mal configuré. Elle fait partie du `preflight` Data.
