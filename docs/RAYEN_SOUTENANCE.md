@@ -102,6 +102,7 @@ python manage.py check_mongodb
 python manage.py init_db
 python manage.py seed_data
 python manage.py db_status
+python manage.py preflight
 ```
 
 Puis :
@@ -178,3 +179,43 @@ Pour que l'affectation du livreur et la création de la commande soient validée
 
 **Pourquoi utiliser un fichier .env ?**  
 Pour éviter de mettre les identifiants et secrets dans le code ou sur GitHub.
+
+
+## 12. Préflight avant démonstration
+
+Une fois Atlas configuré, lancer :
+
+```bash
+cd backend
+python manage.py preflight
+```
+
+Cette commande enchaîne la vérification de connexion MongoDB et le contrôle d'intégrité logique des données. Si elle termine par `Préflight Data / intégration : OK`, la partie Data est prête pour la démonstration.
+
+
+## 13. Point RGPD / données personnelles
+
+Pour montrer une démarche de protection des données pendant la soutenance :
+
+```bash
+python manage.py anonymize_client CLIENT_ID
+python manage.py anonymize_driver DRIVER_ID
+```
+
+La commande anonymise les informations personnelles du client tout en conservant l'historique de ses commandes.
+
+À préciser à l'oral : cette commande illustre un mécanisme d'anonymisation, mais le projet ne prétend pas couvrir à lui seul toute la conformité RGPD.
+
+
+Pour les livreurs, l'anonymisation efface aussi la position et force le statut `offline`. Elle est bloquée si une commande est encore active, afin de ne pas casser le suivi de livraison.
+
+
+## 14. Rapport Data pour la démo
+
+Pour présenter la base sans afficher d'informations personnelles :
+
+```bash
+python manage.py data_report
+```
+
+Le rapport montre les volumes et les statuts uniquement. C'est préférable à l'affichage brut des collections pendant une soutenance.

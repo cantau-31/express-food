@@ -77,10 +77,14 @@ python manage.py check
 python manage.py check_mongodb
 python manage.py init_db
 python manage.py seed_data
+python manage.py verify_data
+python manage.py db_status
 python manage.py runserver
 ```
 
 API locale : `http://127.0.0.1:8000/api/`.
+
+Endpoint de santé / readiness : `GET /api/health/`. Il renvoie `200` lorsque l’API et MongoDB répondent, et `503` si MongoDB est indisponible.
 
 ## Tests
 
@@ -123,3 +127,42 @@ Un Blueprint Render est fourni dans `render.yaml`. Les secrets, notamment `DJANG
 Le projet est organisé avec Git/GitHub et une répartition par responsabilités.
 
 **Trello : à renseigner avec le lien du tableau de l'équipe avant la remise finale.**
+
+
+## Vérification d'intégrité des données
+
+La commande suivante contrôle les principales références et incohérences sans modifier les données :
+
+```bash
+cd backend
+python manage.py verify_data
+```
+
+Elle vérifie notamment les statuts de commandes/livreurs, les coordonnées partielles, les références client/livreur des commandes et la cohérence entre `active_order_id` d'un livreur et la commande affectée.
+
+
+## Données personnelles / RGPD
+
+Le projet limite les données client aux informations nécessaires à la livraison. Pour une démonstration de gestion du droit à l'effacement sans supprimer l'historique transactionnel, une commande d'administration permet d'anonymiser les informations personnelles d'un client :
+
+```bash
+cd backend
+python manage.py anonymize_client CLIENT_ID
+python manage.py anonymize_driver DRIVER_ID
+```
+
+La commande client remplace le prénom, le nom, l'email, le téléphone et l'adresse par des valeurs anonymisées, tout en conservant les commandes historiques liées à l'identifiant technique du client. La commande livreur anonymise son identité, efface sa position, le passe hors ligne et refuse l'opération s'il possède encore une commande active.
+
+Cette fonctionnalité aide à démontrer une démarche de minimisation et d'anonymisation, mais **ne constitue pas à elle seule une conformité RGPD complète** : une politique de conservation, les bases légales, l'information des personnes et les contrôles d'accès restent à définir par le projet.
+
+
+## Rapport Data pour démonstration
+
+Pour afficher un état synthétique de la base sans exposer de données personnelles :
+
+```bash
+cd backend
+python manage.py data_report
+```
+
+Le rapport affiche uniquement des agrégats : nombre de clients, repas, livreurs, commandes et répartition des statuts. Il ne montre ni noms, ni emails, ni téléphones, ni adresses, ni positions.
