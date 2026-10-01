@@ -152,3 +152,41 @@ class InfrastructureTests(APITestCase):
         with patch("common.management.commands.anonymize_client.database", return_value=self.db):
             with self.assertRaises(Exception):
                 call_command("anonymize_client", str(ObjectId()), stdout=StringIO(), stderr=StringIO())
+
+
+    def test_anonymize_driver_command(self):
+        driver_id = self.db.delivery_drivers.insert_one({
+            "first_name": "Lucas",
+            "last_name": "Test",
+            "phone": "0600000001",
+            "status": "available",
+            "latitude": 43.6,
+            "longitude": 1.4,
+            "active_order_id": None,
+        }).inserted_id
+        self.db.orders.insert_one({
+            "client_id": "unused",
+            "status": "delivered",
+            "delivery_driver_id": str(driver_id),
+        })
+
+        with patch("common.management.commands.anonymize_driver.database", return_value=self.db):
+            out = StringIO()
+            call_command("anonymize_driver", str(driver_id), stdout=out)
+
+        driver = self.db.delivery_drivers.find_one({"_id": driver_id})
+        self.assertEqual(driver["first_name"], "Deleted")
+        self.assertEqual(driver["last_name"], "Driver")
+        self.assertEqual(driver["phone"], "0000000000")
+        self.assertEqual(driver["status"], "offline")
+        self.assertIsNone(driver["latitude"])
+        self.assertIsNone(driver["longitude"])
+        self.assertIn("Historique conservé : 1 commande(s)", out.getvalue())
+
+        self.db.delivery_drivers.update_one(
+            {"_id": driver_id},
+            {"$set": {"active_order_id": "507f1f77bcf86cd799439011"}}
+        )
+        with patch("common.management.commands.anonymize_driver.database", return_value=self.db):
+            with self.assertRaises(Exception):
+                call_command("anonymize_driver", str(driver_id), stdout=StringIO(), stderr=StringIO())
