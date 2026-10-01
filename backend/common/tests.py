@@ -190,3 +190,32 @@ class InfrastructureTests(APITestCase):
         with patch("common.management.commands.anonymize_driver.database", return_value=self.db):
             with self.assertRaises(Exception):
                 call_command("anonymize_driver", str(driver_id), stdout=StringIO(), stderr=StringIO())
+
+
+    def test_data_report_command(self):
+        self.db.clients.insert_one({"email": "report@example.com"})
+        self.db.meals.insert_one({"name": "Plat report"})
+        self.db.delivery_drivers.insert_many([
+            {"status": "available"},
+            {"status": "offline"},
+        ])
+        self.db.orders.insert_many([
+            {"status": "pending"},
+            {"status": "delivered"},
+            {"status": "delivered"},
+        ])
+
+        with patch("common.management.commands.data_report.database", return_value=self.db):
+            out = StringIO()
+            call_command("data_report", stdout=out)
+
+        output = out.getvalue()
+        self.assertIn("Clients : 1", output)
+        self.assertIn("Repas : 1", output)
+        self.assertIn("Livreurs : 2", output)
+        self.assertIn("Commandes : 3", output)
+        self.assertIn("- delivered: 2", output)
+        self.assertIn("- pending: 1", output)
+        self.assertIn("- available: 1", output)
+        self.assertIn("- offline: 1", output)
+        self.assertNotIn("report@example.com", output)
