@@ -76,6 +76,7 @@ Initialiser MongoDB et charger les données de démonstration :
 python manage.py check
 python manage.py check_mongodb
 python manage.py init_db
+python manage.py check_indexes
 python manage.py seed_data
 python manage.py verify_data
 python manage.py db_status
@@ -166,3 +167,15 @@ python manage.py data_report
 ```
 
 Le rapport affiche uniquement des agrégats : nombre de clients, repas, livreurs, commandes et répartition des statuts. Il ne montre ni noms, ni emails, ni téléphones, ni adresses, ni positions.
+
+
+## Vérification des index MongoDB
+
+Après `init_db`, vérifier que les index attendus sont réellement présents :
+
+```bash
+cd backend
+python manage.py check_indexes
+```
+
+La commande échoue si un index indispensable manque ou si l'index unique sur `clients.email` n'est pas configuré comme unique. Elle est également exécutée par `python manage.py preflight`.
