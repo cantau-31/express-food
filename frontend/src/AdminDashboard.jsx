@@ -363,11 +363,25 @@ function DriversAdmin() {
 
   const saveLocation = async (id) => {
     const location = locations[id] || {};
+    const latitude = Number(location.latitude);
+    const longitude = Number(location.longitude);
+
+    if (
+      location.latitude === "" ||
+      location.longitude === "" ||
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude) ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+      setMessage("Saisissez une latitude (-90 à 90) et une longitude (-180 à 180) valides.");
+      return;
+    }
+
     try {
-      await api.updateDriverLocation(id, {
-        latitude: Number(location.latitude),
-        longitude: Number(location.longitude),
-      });
+      await api.updateDriverLocation(id, { latitude, longitude });
       setMessage("Position mise à jour.");
       load();
     } catch (error) {
