@@ -148,8 +148,9 @@ Le projet limite les données client aux informations nécessaires à la livrais
 ```bash
 cd backend
 python manage.py anonymize_client CLIENT_ID
+python manage.py anonymize_driver DRIVER_ID
 ```
 
-La commande remplace le prénom, le nom, l'email, le téléphone et l'adresse par des valeurs anonymisées, tout en conservant les commandes historiques liées à l'identifiant technique du client.
+La commande client remplace le prénom, le nom, l'email, le téléphone et l'adresse par des valeurs anonymisées, tout en conservant les commandes historiques liées à l'identifiant technique du client. La commande livreur anonymise son identité, efface sa position, le passe hors ligne et refuse l'opération s'il possède encore une commande active.
 
 Cette fonctionnalité aide à démontrer une démarche de minimisation et d'anonymisation, mais **ne constitue pas à elle seule une conformité RGPD complète** : une politique de conservation, les bases légales, l'information des personnes et les contrôles d'accès restent à définir par le projet.
