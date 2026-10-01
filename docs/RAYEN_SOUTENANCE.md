@@ -102,6 +102,7 @@ python manage.py check_mongodb
 python manage.py init_db
 python manage.py seed_data
 python manage.py db_status
+python manage.py preflight
 ```
 
 Puis :
@@ -178,3 +179,15 @@ Pour que l'affectation du livreur et la création de la commande soient validée
 
 **Pourquoi utiliser un fichier .env ?**  
 Pour éviter de mettre les identifiants et secrets dans le code ou sur GitHub.
+
+
+## 12. Préflight avant démonstration
+
+Une fois Atlas configuré, lancer :
+
+```bash
+cd backend
+python manage.py preflight
+```
+
+Cette commande enchaîne la vérification de connexion MongoDB et le contrôle d'intégrité logique des données. Si elle termine par `Préflight Data / intégration : OK`, la partie Data est prête pour la démonstration.
