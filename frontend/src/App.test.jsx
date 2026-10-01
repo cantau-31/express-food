@@ -1,8 +1,8 @@
 /* @vitest-environment jsdom */
 import "@testing-library/jest-dom/vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("./api", () => ({
   api: {
@@ -18,6 +18,8 @@ import App from "./App";
 import { api } from "./api";
 
 describe("App", () => {
+  afterEach(() => cleanup());
+
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
