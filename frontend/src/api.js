@@ -39,8 +39,43 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  updateClient: (id, payload) =>
+    request(`/clients/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteClient: (id) =>
+    request(`/clients/${id}/`, { method: "DELETE" }),
+  createMeal: (payload) =>
+    request("/meals/", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateMeal: (id, payload) =>
+    request(`/meals/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteMeal: (id) =>
+    request(`/meals/${id}/`, { method: "DELETE" }),
   getDrivers: () => request("/delivery-drivers/"),
   getAvailableDrivers: () => request("/delivery-drivers/available/"),
+  createDriver: (payload) =>
+    request("/delivery-drivers/", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateDriverStatus: (id, status) =>
+    request(`/delivery-drivers/${id}/status/`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
+  updateDriverLocation: (id, payload) =>
+    request(`/delivery-drivers/${id}/location/`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  getOrders: () => request("/orders/"),
   createOrder: (payload) =>
     request("/orders/", {
       method: "POST",
@@ -48,6 +83,11 @@ export const api = {
     }),
   getOrder: (id) => request(`/orders/${id}/`),
   getOrderStatus: (id) => request(`/orders/${id}/status/`),
+  updateOrderStatus: (id, status) =>
+    request(`/orders/${id}/status/`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
 };
 
 export { API_BASE_URL };
