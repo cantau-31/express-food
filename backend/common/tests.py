@@ -69,3 +69,35 @@ class InfrastructureTests(APITestCase):
         self.assertEqual(response.status_code, 503)
         self.assertEqual(response.json(), {"status": "degraded", "database": "unavailable"})
         self.assertNotIn("private", str(response.data))
+
+
+    def test_verify_data_command(self):
+        from bson import ObjectId
+
+        client_id = self.db.clients.insert_one({"email": "audit@example.com"}).inserted_id
+        driver_id = self.db.delivery_drivers.insert_one({
+            "first_name": "Audit",
+            "status": "available",
+            "latitude": None,
+            "longitude": None,
+            "active_order_id": None,
+        }).inserted_id
+        self.db.orders.insert_one({
+            "client_id": str(client_id),
+            "status": "accepted",
+            "delivery_driver_id": str(driver_id),
+        })
+
+        with patch("common.management.commands.verify_data.database", return_value=self.db):
+            out = StringIO()
+            call_command("verify_data", stdout=out)
+        self.assertIn("Intégrité des données : OK", out.getvalue())
+
+        self.db.orders.insert_one({
+            "client_id": str(ObjectId()),
+            "status": "broken",
+            "delivery_driver_id": None,
+        })
+        with patch("common.management.commands.verify_data.database", return_value=self.db):
+            with self.assertRaises(Exception):
+                call_command("verify_data", stdout=StringIO(), stderr=StringIO())
