@@ -1,6 +1,6 @@
 # IPSSI Express Food — Backend
 
-Backend étudiant Python / Django REST Framework / MongoDB Atlas, indépendant du frontend React. Aucun frontend, paiement ou service cartographique n'est inclus.
+Backend étudiant Python / Django REST Framework / MongoDB Atlas. Le frontend React du dépôt se trouve dans `../frontend/`. Le backend reste indépendant et ne contient ni paiement ni service cartographique.
 
 ## Installation
 
