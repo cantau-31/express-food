@@ -191,3 +191,16 @@ python manage.py preflight
 ```
 
 Cette commande enchaîne la vérification de connexion MongoDB et le contrôle d'intégrité logique des données. Si elle termine par `Préflight Data / intégration : OK`, la partie Data est prête pour la démonstration.
+
+
+## 13. Point RGPD / données personnelles
+
+Pour montrer une démarche de protection des données pendant la soutenance :
+
+```bash
+python manage.py anonymize_client CLIENT_ID
+```
+
+La commande anonymise les informations personnelles du client tout en conservant l'historique de ses commandes.
+
+À préciser à l'oral : cette commande illustre un mécanisme d'anonymisation, mais le projet ne prétend pas couvrir à lui seul toute la conformité RGPD.
