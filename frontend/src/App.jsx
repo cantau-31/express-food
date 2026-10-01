@@ -129,7 +129,11 @@ function MenuPage({ cart, setCart }) {
       {loading && <StateCard text="Chargement du menu..." />}
       {error && <StateCard error text={error} />}
 
-      {!loading && !error && (
+      {!loading && !error && meals.length === 0 && (
+        <StateCard text="Aucun repas n’est disponible aujourd’hui." />
+      )}
+
+      {!loading && !error && meals.length > 0 && (
         <div className="meal-grid">
           {meals.map((meal) => (
             <article className="meal-card" key={meal.id}>
@@ -416,6 +420,7 @@ function TrackingPage() {
 
   const steps = ["pending", "accepted", "preparing", "out_for_delivery", "delivered"];
   const current = steps.indexOf(tracking.status);
+  const cancelled = tracking.status === "cancelled";
 
   return (
     <section className="page narrow">
@@ -423,6 +428,11 @@ function TrackingPage() {
       <h1>Suivi de livraison</h1>
 
       <div className="tracking-card">
+        {cancelled && (
+          <div className="tracking-cancelled">
+            Cette commande a été annulée.
+          </div>
+        )}
         <div className="eta">
           <span>Temps estimé</span>
           <strong>
@@ -481,6 +491,10 @@ function DriversPage() {
         </div>
       </div>
       {error && <StateCard error text={error} />}
+      {!error && drivers.length === 0 && (
+        <StateCard text="Aucun livreur à afficher." />
+      )}
+      {!error && drivers.length > 0 && (
       <div className="driver-grid">
         {drivers.map((driver) => (
           <article className="driver-list-card" key={driver.id}>
@@ -493,6 +507,7 @@ function DriversPage() {
           </article>
         ))}
       </div>
+      )}
     </section>
   );
 }
