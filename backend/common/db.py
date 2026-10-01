@@ -29,8 +29,4 @@ def ensure_indexes():
     db.clients.create_index("email", unique=True)
     db.meals.create_index([("date", 1), ("available", 1)])
     db.delivery_drivers.create_index("status")
-    db.delivery_drivers.create_index("active_order_id")
     db.orders.create_index("client_id")
-    db.orders.create_index("status")
-    db.orders.create_index("delivery_driver_id")
-    db.orders.create_index("created_at")

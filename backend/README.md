@@ -1,6 +1,6 @@
 # IPSSI Express Food — Backend
 
-Backend étudiant Python / Django REST Framework / MongoDB Atlas, indépendant du frontend React. Aucun frontend, paiement ou service cartographique n'est inclus.
+Backend étudiant Python / Django REST Framework / MongoDB Atlas. Le frontend React du dépôt se trouve dans `../frontend/`. Le backend reste indépendant et ne contient ni paiement ni service cartographique.
 
 ## Installation
 
@@ -35,7 +35,6 @@ Reporter cette valeur dans `DJANGO_SECRET_KEY`. Le vrai `.env` est ignoré par G
 
 ```bash
 python manage.py check
-python manage.py check_mongodb
 python manage.py init_db
 python manage.py seed_data
 python manage.py runserver
@@ -43,7 +42,7 @@ python manage.py runserver
 
 `init_db` est requis avant les premières écritures pour garantir notamment l'unicité des emails. `seed_data` le lance aussi. Il crée les collections et leurs index. Les transactions nécessitent un replica set ou cluster shardé, comme Atlas ; un MongoDB local standalone ne convient pas. Aucune migration SQL ni commande `migrate` n'est nécessaire.
 
-Le serveur écoute sur `http://127.0.0.1:8000`. `check` valide Django sans contacter Atlas ; `check_mongodb` effectue un ping explicite du cluster ; `init_db` vérifie réellement l'accès à MongoDB. L'absence d'identifiants Atlas empêche donc seulement les opérations sur les données, pas les tests unitaires.
+Le serveur écoute sur `http://127.0.0.1:8000`. `check` valide Django sans contacter Atlas ; `init_db` vérifie réellement l'accès à MongoDB. L'absence d'identifiants Atlas empêche donc seulement les opérations sur les données, pas les tests unitaires.
 
 ## Configuration
 

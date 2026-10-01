@@ -1,193 +1,68 @@
 # IPSSI Express Food
 
-Application web de livraison de repas réalisée dans le cadre du projet annuel IPSSI.
+Application de livraison de repas réalisée avec un backend Django REST Framework et un frontend React.
 
-## Architecture
+## Répartition actuelle
+
+| Partie | Julien — Backend | Rayen — Frontend |
+| --- | --- | --- |
+| Architecture globale | Responsable backend | Intégration frontend |
+| Django / API REST | Responsable | Consommation API / tests d'intégration UI |
+| Clients | API | UI / gestion |
+| Plats & desserts | API | UI / gestion |
+| Commandes | Logique métier | UI / création / suivi |
+| Livreurs | API | UI / affichage / gestion |
+| Statut livreur | API | Affichage et gestion |
+| Position livreur | API | Affichage et mise à jour |
+| Calcul total | Serveur | Affichage |
+| Livraison offerte dès 19,99 € | Serveur | Affichage |
+| Attribution livreur | Serveur | Affichage |
+| Temps estimé | Serveur | Affichage |
+| React | — | Responsable |
+| Responsive | — | Responsable |
+| Déploiement frontend | — | Responsable |
+
+## Structure
 
 ```text
-React (frontend)
-    ↓ HTTP / JSON
-API Django REST Framework
-    ↓ PyMongo
-MongoDB Atlas
+express-food/
+├── backend/   # Django REST Framework
+└── frontend/  # React + Vite — Rayen
 ```
 
-Le dépôt contient actuellement le backend Django dans `backend/`. Le frontend React pourra être ajouté dans un dossier `frontend/`.
+## Backend
 
-## Répartition de l'équipe
+Voir [backend/README.md](backend/README.md).
 
-| Partie | Julien — Backend | Rima — Frontend | Rayen — Data / intégration |
-| --- | --- | --- | --- |
-| Architecture globale | Responsable | Contribution | Contribution |
-| API REST | Responsable | — | Tests / validation |
-| Gestion clients | Backend / API | Interface | MongoDB / données |
-| Gestion plats / desserts | Backend / API | Interface | MongoDB / données |
-| Gestion commandes | Logique métier | Interface | MongoDB / données |
-| Gestion livreurs | Backend / API | Interface | MongoDB / données |
-| Statut et position livreur | API / logique | Affichage | Persistance MongoDB |
-| MongoDB Atlas | Connexion backend | — | Responsable |
-| Collections / index MongoDB | Modèles / accès | — | Responsable |
-| Connexion React ↔ API | API / CORS | Consommation API | Tests d'intégration |
-| Tests API | Backend | — | Intégration / données |
-| Déploiement | Backend | Frontend | Support DB / configuration |
-| README / installation | Backend | Frontend | DB / intégration |
+## Frontend — Rayen
 
-### Contribution Rayen — Data / intégration
+Voir [frontend/README.md](frontend/README.md).
 
-La partie Data / intégration couvre notamment :
-
-- configuration MongoDB Atlas et variables d'environnement ;
-- collections `clients`, `meals`, `delivery_drivers`, `orders` ;
-- index MongoDB et unicité des emails clients ;
-- stockage des statuts et positions des livreurs ;
-- données de démonstration ;
-- tests API liés à la persistance ;
-- tests d'intégration réels sur MongoDB Atlas ;
-- validation des transactions et de l'affectation concurrente d'un livreur ;
-- documentation de la configuration Atlas et du déploiement.
-
-## Installation du backend
+Démarrage rapide :
 
 ```bash
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+cd frontend
+npm install
 cp .env.example .env
+npm run dev
 ```
 
-Sous Windows :
+Le frontend utilise par défaut l'API :
 
-```bash
-.venv\Scripts\activate
+```text
+http://127.0.0.1:8000/api
 ```
 
-Renseigner ensuite `backend/.env`, en particulier :
+## Parcours utilisateur frontend
 
-```env
-DJANGO_SECRET_KEY=une-cle-secrete-longue
-MONGODB_URI=mongodb+srv://USER:PASSWORD@CLUSTER.mongodb.net/?retryWrites=true&w=majority
-MONGODB_DATABASE=express_food
-```
+- accueil ;
+- menu du jour ;
+- panier ;
+- finalisation de commande ;
+- suivi de livraison ;
+- affichage des livreurs ;
+- interface de gestion pour clients, repas, commandes et livreurs.
 
-Initialiser MongoDB et charger les données de démonstration :
+## Contribution Rayen
 
-```bash
-python manage.py check
-python manage.py check_mongodb
-python manage.py init_db
-python manage.py check_indexes
-python manage.py seed_data
-python manage.py verify_data
-python manage.py db_status
-python manage.py runserver
-```
-
-API locale : `http://127.0.0.1:8000/api/`.
-
-Endpoint de santé / readiness : `GET /api/health/`. Il renvoie `200` lorsque l’API et MongoDB répondent, et `503` si MongoDB est indisponible.
-
-## Tests
-
-Tests unitaires sans compte Atlas :
-
-```bash
-cd backend
-python manage.py test --settings=config.test_settings
-```
-
-Tests d'intégration sur un vrai cluster Atlas :
-
-```bash
-RUN_MONGODB_INTEGRATION=1 python manage.py test orders.test_integration --settings=config.test_settings
-```
-
-Ces tests utilisent une base temporaire `express_food_test_<uuid>` puis la suppriment automatiquement.
-
-## MongoDB Atlas
-
-La procédure détaillée est disponible dans [docs/MONGODB_ATLAS.md](docs/MONGODB_ATLAS.md). Le schéma logique des collections est documenté dans [docs/DATA_MODEL.md](docs/DATA_MODEL.md). La stratégie d’index MongoDB est détaillée dans [docs/INDEX_STRATEGY.md](docs/INDEX_STRATEGY.md). Une fiche de démonstration et de soutenance pour la partie Data / intégration est disponible dans [docs/RAYEN_SOUTENANCE.md](docs/RAYEN_SOUTENANCE.md).
-
-Les identifiants Atlas ne doivent jamais être commités. Le fichier `.env` est ignoré par Git ; seul `.env.example` est versionné.
-
-## Déploiement backend
-
-Un Blueprint Render est fourni dans `render.yaml`. Les secrets, notamment `DJANGO_SECRET_KEY` et `MONGODB_URI`, doivent être définis directement dans l'environnement de déploiement.
-
-## Règles métier principales
-
-- deux plats et deux desserts peuvent être proposés chaque jour ;
-- les commandes utilisent les prix calculés côté serveur ;
-- livraison gratuite à partir de **19,99 €** ;
-- un livreur disponible peut être affecté atomiquement à une commande ;
-- le suivi expose le statut, le prénom du livreur, sa position éventuelle et l'estimation ;
-- une livraison ou une annulation libère le livreur.
-
-## Méthodologie projet
-
-Le projet est organisé avec Git/GitHub et une répartition par responsabilités.
-
-**Trello : à renseigner avec le lien du tableau de l'équipe avant la remise finale.**
-
-
-## Vérification d'intégrité des données
-
-La commande suivante contrôle les principales références et incohérences sans modifier les données :
-
-```bash
-cd backend
-python manage.py verify_data
-```
-
-Elle vérifie notamment les statuts de commandes/livreurs, les coordonnées partielles, les références client/livreur des commandes et la cohérence entre `active_order_id` d'un livreur et la commande affectée.
-
-
-## Données personnelles / RGPD
-
-Le projet limite les données client aux informations nécessaires à la livraison. Pour une démonstration de gestion du droit à l'effacement sans supprimer l'historique transactionnel, une commande d'administration permet d'anonymiser les informations personnelles d'un client :
-
-```bash
-cd backend
-python manage.py anonymize_client CLIENT_ID
-python manage.py anonymize_driver DRIVER_ID
-```
-
-La commande client remplace le prénom, le nom, l'email, le téléphone et l'adresse par des valeurs anonymisées, tout en conservant les commandes historiques liées à l'identifiant technique du client. La commande livreur anonymise son identité, efface sa position, le passe hors ligne et refuse l'opération s'il possède encore une commande active.
-
-Cette fonctionnalité aide à démontrer une démarche de minimisation et d'anonymisation, mais **ne constitue pas à elle seule une conformité RGPD complète** : une politique de conservation, les bases légales, l'information des personnes et les contrôles d'accès restent à définir par le projet.
-
-
-## Rapport Data pour démonstration
-
-Pour afficher un état synthétique de la base sans exposer de données personnelles :
-
-```bash
-cd backend
-python manage.py data_report
-```
-
-Le rapport affiche uniquement des agrégats : nombre de clients, repas, livreurs, commandes et répartition des statuts. Il ne montre ni noms, ni emails, ni téléphones, ni adresses, ni positions.
-
-
-## Vérification des index MongoDB
-
-Après `init_db`, vérifier que les index attendus sont réellement présents :
-
-```bash
-cd backend
-python manage.py check_indexes
-```
-
-La commande échoue si un index indispensable manque ou si l'index unique sur `clients.email` n'est pas configuré comme unique. Elle est également exécutée par `python manage.py preflight`.
-
-
-## Vérification avant déploiement
-
-Avant de publier le backend, vérifier les paramètres de production :
-
-```bash
-cd backend
-python manage.py check_deployment
-```
-
-La commande contrôle notamment que `DEBUG=False`, que la clé Django est suffisamment longue, que `ALLOWED_HOSTS` n'utilise pas `*`, que CORS est explicitement configuré et que les variables MongoDB sont présentes.
+La contribution actuelle de Rayen est centrée sur le **frontend React et l'intégration UI avec l'API Django**.
