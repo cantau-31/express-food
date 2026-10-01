@@ -82,6 +82,8 @@ python manage.py runserver
 
 API locale : `http://127.0.0.1:8000/api/`.
 
+Endpoint de santé / readiness : `GET /api/health/`. Il renvoie `200` lorsque l’API et MongoDB répondent, et `503` si MongoDB est indisponible.
+
 ## Tests
 
 Tests unitaires sans compte Atlas :
