@@ -51,3 +51,21 @@ class InfrastructureTests(APITestCase):
         self.assertIn("Connexion MongoDB : OK", output)
         self.assertIn("clients: 1 document(s)", output)
         self.assertIn("orders:", output)
+
+
+    def test_health_endpoint(self):
+        from unittest.mock import MagicMock
+
+        fake_client = MagicMock()
+        fake_client.admin.command.return_value = {"ok": 1.0}
+        with patch("common.views.mongo_client", return_value=fake_client):
+            response = self.api.get("/api/health/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ok", "database": "ok"})
+
+        with patch("common.views.mongo_client") as mocked:
+            mocked.return_value.admin.command.side_effect = ServerSelectionTimeoutError("private details")
+            response = self.api.get("/api/health/")
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json(), {"status": "degraded", "database": "unavailable"})
+        self.assertNotIn("private", str(response.data))
