@@ -105,3 +105,14 @@ Le workflow automatisé couvre désormais aussi un parcours utilisateur critique
 4. vérification du payload envoyé ;
 5. redirection vers le suivi ;
 6. vidage du panier après création réussie.
+
+
+## Déploiement
+
+Le guide de déploiement frontend est disponible dans [DEPLOYMENT.md](DEPLOYMENT.md).
+
+Le frontend est prêt pour Vercel avec :
+- root directory `frontend` ;
+- build `npm run build` ;
+- sortie `dist` ;
+- variable `VITE_API_BASE_URL` pour l'API Django publique.
